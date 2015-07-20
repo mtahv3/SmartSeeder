@@ -15,7 +15,12 @@ class SeedCommand extends Command
      */
     protected $name = 'seed:run';
 
-    private $migrator;
+    /**
+     * Seed migrator instance.
+     *
+     * @var \Jlapp\SmartSeeder\SeedMigrator
+     */
+    protected $migrator;
 
     /**
      * The console command description.
@@ -27,6 +32,7 @@ class SeedCommand extends Command
     public function __construct(SeedMigrator $migrator)
     {
         parent::__construct();
+
         $this->migrator = $migrator;
     }
 
@@ -49,13 +55,16 @@ class SeedCommand extends Command
         $pretend = $this->input->getOption('pretend');
 
         $path = database_path(config('smart-seeder.seedDir'));
+
         $env = $this->option('env');
 
         $this->migrator->setEnv($env);
 
         $single = $this->option('file');
+
         if ($single) {
             $this->migrator->runSingleFile("$path/$single", $pretend);
+
         } else {
             $this->migrator->run($path, $pretend);
         }
@@ -93,7 +102,6 @@ class SeedCommand extends Command
             array('env', null, InputOption::VALUE_OPTIONAL, 'The environment in which to run the seeds.', null),
             array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'),
             array('file', null, InputOption::VALUE_OPTIONAL, 'Allows individual seed files to be run.', null),
-
             array('force', null, InputOption::VALUE_NONE, 'Force the operation to run when in production.'),
             array('pretend', null, InputOption::VALUE_NONE, 'Dump the SQL queries that would be run.'),
         );

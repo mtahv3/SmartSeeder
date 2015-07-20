@@ -1,12 +1,13 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
 use Illuminate\Console\ConfirmableTrait;
+use Symfony\Component\Console\Input\InputOption;
 
 class SeedRefreshCommand extends Command
 {
     use ConfirmableTrait;
+
     /**
      * The console command name.
      *

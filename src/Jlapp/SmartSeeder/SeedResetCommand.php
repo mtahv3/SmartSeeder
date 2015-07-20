@@ -1,13 +1,14 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
+use \Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\ConfirmableTrait;
-use File;
+use Symfony\Component\Console\Input\InputOption;
 
 class SeedResetCommand extends Command
 {
     use ConfirmableTrait;
+
     /**
      * The console command name.
      *
@@ -15,7 +16,19 @@ class SeedResetCommand extends Command
      */
     protected $name = 'seed:reset';
 
-    private $migrator;
+    /**
+     * Migrator instance.
+     *
+     * @var \Jlapp\SmartSeeder\SeedMigrator
+     */
+    protected $migrator;
+
+    /**
+     * Filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
 
     /**
      * The console command description.
@@ -44,7 +57,7 @@ class SeedResetCommand extends Command
 
         $env = $this->option('env');
 
-        if (File::exists(database_path(config('smart-seeder.seedsDir')))) {
+        if ($this->files->exists(database_path(config('smart-seeder.seedsDir')))) {
             $this->migrator->setEnv($env);
         }
         //otherwise use the default environment

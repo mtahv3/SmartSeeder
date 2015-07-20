@@ -2,9 +2,9 @@
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
-use Illuminate\Support\Facades\App;
 
-class SeedInstallCommand extends Command {
+class SeedInstallCommand extends Command
+{
     /**
      * The console command name.
      *
@@ -22,12 +22,12 @@ class SeedInstallCommand extends Command {
     /**
      * The repository instance.
      *
-     * @var \Illuminate\Database\Migrations\MigrationRepositoryInterface
+     * @var \Jlapp\SmartSeeder\SmartSeederRepository
      */
     protected $repository;
 
-
-    public function __construct(SmartSeederRepository $repository) {
+    public function __construct(SmartSeederRepository $repository)
+    {
         parent::__construct();
         $this->repository = $repository;
     }
@@ -42,7 +42,7 @@ class SeedInstallCommand extends Command {
 
         $this->repository->createRepository();
 
-        $this->info("Seeds table created successfully.");
+        $this->info('Seeds table created successfully.');
     }
 
     /**
@@ -52,8 +52,8 @@ class SeedInstallCommand extends Command {
      */
     protected function getOptions()
     {
-        return array(
-            array('database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'),
-        );
+        return [
+            ['database', null, InputOption::VALUE_OPTIONAL, 'The database connection to use.'],
+        ];
     }
 }

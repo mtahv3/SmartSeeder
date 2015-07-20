@@ -1,9 +1,9 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
+use \Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\ConfirmableTrait;
 use Symfony\Component\Console\Input\InputOption;
-use File;
 
 class SeedRollbackCommand extends Command
 {
@@ -16,7 +16,19 @@ class SeedRollbackCommand extends Command
      */
     protected $name = 'seed:rollback';
 
-    private $migrator;
+    /**
+     * Migrator instance.
+     *
+     * @var \Jlapp\SmartSeeder\SeedMigrator
+     */
+    protected $migrator;
+
+    /**
+     * Filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
 
     /**
      * The console command description.
@@ -25,10 +37,12 @@ class SeedRollbackCommand extends Command
      */
     protected $description = 'Rollback all database seeding';
 
-    public function __construct(SeedMigrator $migrator)
+    public function __construct(SeedMigrator $migrator, Filesystem $files)
     {
         parent::__construct();
+
         $this->migrator = $migrator;
+        $this->files    = $files;
     }
     /**
      * Execute the console command.
@@ -45,7 +59,7 @@ class SeedRollbackCommand extends Command
 
         $env = $this->option('env');
 
-        if (File::exists(database_path(config('smart-seeder.seedsDir')))) {
+        if ($this->files->exists(database_path(config('smart-seeder.seedsDir')))) {
             $this->migrator->setEnv($env);
         }
 

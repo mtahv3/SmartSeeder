@@ -53,7 +53,7 @@ class SmartSeederServiceProvider extends ServiceProvider
         }
 
         $this->app->singleton('seed.repository', function ($app) {
-            return new SmartSeederRepository($app['db'], config('smart-seeder.seedTable'));
+            return new SmartSeederRepository($app['db'], config('smart-seeder.seedTable'), $app->environment());
         });
 
         $this->app->singleton('seed.migrator', function ($app) {

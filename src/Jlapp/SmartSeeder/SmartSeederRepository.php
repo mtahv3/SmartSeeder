@@ -3,7 +3,6 @@
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
 use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Database\Schema\Blueprint;
-use App;
 
 class SmartSeederRepository implements MigrationRepositoryInterface
 {
@@ -33,18 +32,30 @@ class SmartSeederRepository implements MigrationRepositoryInterface
      *
      * @var string
      */
-    public $env;
+    protected $env;
 
     /**
      * Create a new database migration repository instance.
      *
      * @param \Illuminate\Database\ConnectionResolverInterface $resolver
      * @param string                                           $table
+     * @param string                                           $environment
      */
-    public function __construct(Resolver $resolver, $table)
+    public function __construct(Resolver $resolver, $table, $environment)
     {
-        $this->table = $table;
+        $this->table    = $table;
         $this->resolver = $resolver;
+        $this->env      = $environment;
+    }
+
+    /**
+     * Get the environment we run in.
+     *
+     * @return string
+     */
+    public function getEnv()
+    {
+        return $this->env;
     }
 
     /**
@@ -64,12 +75,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface
      */
     public function getRan()
     {
-        $env = $this->env;
-        if (empty($env)) {
-            $env = App::environment();
-        }
-
-        return $this->table()->where('env', '=', $env)->lists('seed');
+        return $this->table()->where('env', '=', $this->env)->lists('seed');
     }
 
     /**
@@ -79,12 +85,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface
      */
     public function getLast()
     {
-        $env = $this->env;
-        if (empty($env)) {
-            $env = App::environment();
-        }
-
-        $query = $this->table()->where('env', '=', $env)->where('batch', $this->getLastBatchNumber());
+        $query = $this->table()->where('env', '=', $this->env)->where('batch', $this->getLastBatchNumber());
 
         return $query->orderBy('seed', 'desc')->get();
     }
@@ -97,11 +98,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface
      */
     public function log($file, $batch)
     {
-        $env = $this->env;
-        if (empty($env)) {
-            $env = App::environment();
-        }
-        $record = array('seed' => $file, 'env' => $env, 'batch' => $batch);
+        $record = array('seed' => $file, 'env' => $this->env, 'batch' => $batch);
 
         $this->table()->insert($record);
     }
@@ -115,11 +112,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface
      */
     public function delete($seed)
     {
-        $env = $this->env;
-        if (empty($env)) {
-            $env = App::environment();
-        }
-        $this->table()->where('env', '=', $env)->where('seed', $seed->seed)->delete();
+        $this->table()->where('env', '=', $this->env)->where('seed', $seed->seed)->delete();
     }
 
     /**
@@ -139,12 +132,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface
      */
     public function getLastBatchNumber()
     {
-        $env = $this->env;
-        if (empty($env)) {
-            $env = App::environment();
-        }
-
-        return $this->table()->where('env', '=', $env)->max('batch');
+        return $this->table()->where('env', '=', $this->env)->max('batch');
     }
 
     /**
@@ -155,12 +143,11 @@ class SmartSeederRepository implements MigrationRepositoryInterface
         $schema = $this->getConnection()->getSchemaBuilder();
 
         $schema->create($this->table, function (Blueprint $table) {
-            // The migrations table is responsible for keeping track of which of the
-            // migrations have actually run for the application. We'll create the
-            // table to hold the migration file's path as well as the batch ID.
+            // The seeds table is responsible for keeping track of which of the
+            // seeds have actually run for the application. We'll create the
+            // table to hold the seed file's path as well as the batch ID.
             $table->string('seed');
             $table->string('env');
-
             $table->integer('batch');
         });
     }

@@ -1,12 +1,9 @@
 <?php namespace Jlapp\SmartSeeder;
 
-use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Filesystem\Filesystem;
+use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
-use Config;
-use File;
-use App;
 
 class SeedMigrator extends Migrator
 {
@@ -41,18 +38,15 @@ class SeedMigrator extends Migrator
      */
     public function getMigrationFiles($path)
     {
-        $files = [];
-        if (!empty($this->repository->env)) {
-            $files = array_merge($files, $this->files->glob("$path/{$this->repository->env}/*.php"));
-        }
-        $files = array_merge($files, $this->files->glob($path.'/*.php'));
+        // make sure we don't try to merge FALSE that could return from glob
+        $envFiles  = $this->files->glob($path.'/'.$this->repository->getEnv().'/*.php') ?: [];
+        $globFiles = $this->files->glob($path.'/*.php') ?: [];
+
+        $files = array_merge($envFiles, $globFiles);
 
         // Once we have the array of files in the directory we will just remove the
         // extension and take the basename of the file which is all we need when
         // finding the migrations that haven't been run against the databases.
-        if ($files === false) {
-            return array();
-        }
 
         $files = array_map(function ($file) {
             return str_replace('.php', '', basename($file));
@@ -168,12 +162,12 @@ class SeedMigrator extends Migrator
     public function resolve($file)
     {
         $filePath = database_path(config('smart-seeder.seedDir').'/'.$file.'.php');
-        if (File::exists($filePath)) {
+        if ($this->files->exists($filePath)) {
             require_once $filePath;
-        } elseif (!empty($this->repository->env)) {
-            require_once database_path(config('smart-seeder.seedDir').'/'.$this->repository->env.'/'.$file.'.php');
         } else {
-            require_once database_path(config('smart-seeder.seedDir').'/'.App::environment().'/'.$file.'.php');
+            require_once database_path(
+                config('smart-seeder.seedDir').'/'.$this->repository->getEnv().'/'.$file.'.php'
+            );
         }
 
         $fullPath = $this->getAppNamespace().$file;

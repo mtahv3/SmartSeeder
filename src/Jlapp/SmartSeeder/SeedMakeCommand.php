@@ -1,11 +1,9 @@
 <?php namespace Jlapp\SmartSeeder;
 
-use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Console\Command;
+use Illuminate\Console\AppNamespaceDetectorTrait;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
-use File;
-use Config;
 
 class SeedMakeCommand extends Command
 {
@@ -24,6 +22,18 @@ class SeedMakeCommand extends Command
      * @var string
      */
     protected $description = 'Makes a seed';
+
+    /**
+     * Filesystem instance.
+     *
+     * @var \Illuminate\Filesystem\Filesystem
+     */
+    protected $files;
+
+    public function __construct(Filesystem $files)
+    {
+        $this->files = $files;
+    }
 
     /**
      * Execute the console command.
@@ -45,20 +55,20 @@ class SeedMakeCommand extends Command
             $path .= "/$env";
         }
 
-        if (!File::exists($path)) {
+        if (!$this->files->exists($path)) {
             // mode 0755 is based on the default mode Laravel use.
-            File::makeDirectory($path, 755, true);
+            $this->files->makeDirectory($path, 755, true);
         }
         $created = date('Y_m_d_His');
         $path .= "/seed_{$created}_{$model}Seeder.php";
 
-        $fs = File::get(__DIR__.'/stubs/DatabaseSeeder.stub');
+        $fs = $this->files->get(__DIR__.'/stubs/DatabaseSeeder.stub');
 
         $namespace = rtrim($this->getAppNamespace(), '\\');
         $stub = str_replace('{{model}}', "seed_{$created}_".$model.'Seeder', $fs);
         $stub = str_replace('{{namespace}}', " namespace $namespace;", $stub);
         $stub = str_replace('{{class}}', $model, $stub);
-        File::put($path, $stub);
+        $this->files->put($path, $stub);
 
         $message = "Seed created for $model";
         if (!empty($env)) {
