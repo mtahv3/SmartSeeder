@@ -72,16 +72,16 @@ class SmartSeederServiceProvider extends ServiceProvider
             return new SeedInstallCommand($app['seed.repository']);
         });
 
-        $this->app->bind('seed.make', function () {
-            return new SeedMakeCommand();
+        $this->app->bind('seed.make', function ($app) {
+            return new SeedMakeCommand($app['files']);
         });
 
         $this->app->bind('seed.reset', function ($app) {
-            return new SeedResetCommand($app['seed.migrator']);
+            return new SeedResetCommand($app['seed.migrator'], $app['files']);
         });
 
         $this->app->bind('seed.rollback', function ($app) {
-            return new SeedRollbackCommand($app['seed.migrator']);
+            return new SeedRollbackCommand($app['seed.migrator'], $app['files']);
         });
 
         $this->app->bind('seed.refresh', function () {

@@ -1,6 +1,6 @@
 # SmartSeeder for Laravel
 
-**Fork of [jlapp/smart-seeder](https://github.com/slampenny/SmartSeeder) adjusted for L5.1**
+**Fork of [jlapp/smart-seeder](https://github.com/slampenny/SmartSeeder) adjusted for L5.1 (and Lumen)**
 
 
 ### Installation

@@ -1,7 +1,7 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
-use \Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\ConfirmableTrait;
 use Symfony\Component\Console\Input\InputOption;
 
@@ -37,10 +37,12 @@ class SeedResetCommand extends Command
      */
     protected $description = 'Resets all the seeds in the database';
 
-    public function __construct(SeedMigrator $migrator)
+    public function __construct(SeedMigrator $migrator, Filesystem $files)
     {
         parent::__construct();
+
         $this->migrator = $migrator;
+        $this->files    = $files;
     }
     /**
      * Execute the console command.

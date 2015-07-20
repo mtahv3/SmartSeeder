@@ -1,6 +1,7 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\AppNamespaceDetectorTrait;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
@@ -32,6 +33,8 @@ class SeedMakeCommand extends Command
 
     public function __construct(Filesystem $files)
     {
+        parent::__construct();
+
         $this->files = $files;
     }
 

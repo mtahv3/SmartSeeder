@@ -1,7 +1,7 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
-use \Illuminate\Filesystem\Filesystem;
+use Illuminate\Filesystem\Filesystem;
 use Illuminate\Console\ConfirmableTrait;
 use Symfony\Component\Console\Input\InputOption;
 
