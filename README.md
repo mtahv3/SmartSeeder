@@ -2,6 +2,28 @@
 
 **Fork of [jlapp/smart-seeder](https://github.com/slampenny/SmartSeeder) adjusted for L5.1**
 
+
+### Installation
+
+- Add custom repository and require the package in `composer.json` for your project:
+    ```
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/jarektkaczyk/SmartSeeder"
+        }
+    ],
+    "require": {
+        ...
+        "sofa/smart-seeder": "dev-master"
+    },
+    ```
+
+- Add `Jlapp\SmartSeeder\SmartSeederServiceProvider` to your providers array in `app/config/app.php`
+- Run php artisan vendor:publish to push config files to your config folder if you want to override the name of the seeds folder or the name of the table where seeds are stored
+
+---
+
 ### For Laravel 5, please use the [5.0 branch](https://github.com/jarektkaczyk/SmartSeeder/tree/5.0)!
 ### For Laravel 4, please use the [4.2 branch](https://github.com/jarektkaczyk/SmartSeeder/tree/4.2)!
 
@@ -38,9 +60,3 @@ When you install SmartSeeder, various artisan commands are made available to you
 <tr><td>seed:install</td><td>You don't have to use this... it will be run automatically when you call "seed"</td></tr>
 </table>
 
-Installation
-============
-
-- Add require: "jlapp/smart-seeder": "dev-master" to your composer.json and run an update to bring it in (or run composer require jlapp/smartseeder).
-- Add 'Jlapp\SmartSeeder\SmartSeederServiceProvider' to your providers array in app/config/app.php
-- Run php artisan vendor:publish to push config files to your config folder if you want to override the name of the seeds folder or the name of the table where seeds are stored

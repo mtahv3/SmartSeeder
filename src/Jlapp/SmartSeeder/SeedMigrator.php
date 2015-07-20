@@ -1,5 +1,4 @@
-<?php
-namespace Jlapp\SmartSeeder;
+<?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Database\Migrations\Migrator;
 use Illuminate\Filesystem\Filesystem;
@@ -9,33 +8,35 @@ use Config;
 use File;
 use App;
 
-class SeedMigrator extends Migrator {
-
+class SeedMigrator extends Migrator
+{
     use AppNamespaceDetectorTrait;
 
     /**
      * Create a new migrator instance.
      *
-     * @param  \Illuminate\Database\Migrations\MigrationRepositoryInterface  $repository
-     * @param  \Illuminate\Database\ConnectionResolverInterface  $resolver
-     * @param  \Illuminate\Filesystem\Filesystem  $files
-     * @return void
+     * @param \Illuminate\Database\Migrations\MigrationRepositoryInterface $repository
+     * @param \Illuminate\Database\ConnectionResolverInterface             $resolver
+     * @param \Illuminate\Filesystem\Filesystem                            $files
      */
-    public function __construct(SmartSeederRepository $repository,
-                                Resolver $resolver,
-                                Filesystem $files)
-    {
+    public function __construct(
+        SmartSeederRepository $repository,
+        Resolver $resolver,
+        Filesystem $files
+    ) {
         parent::__construct($repository, $resolver, $files);
     }
 
-    public function setEnv($env) {
+    public function setEnv($env)
+    {
         $this->repository->setEnv($env);
     }
 
     /**
      * Get all of the migration files in a given path.
      *
-     * @param  string  $path
+     * @param string $path
+     *
      * @return array
      */
     public function getMigrationFiles($path)
@@ -49,10 +50,11 @@ class SeedMigrator extends Migrator {
         // Once we have the array of files in the directory we will just remove the
         // extension and take the basename of the file which is all we need when
         // finding the migrations that haven't been run against the databases.
-        if ($files === false) return array();
+        if ($files === false) {
+            return array();
+        }
 
-        $files = array_map(function($file)
-        {
+        $files = array_map(function ($file) {
             return str_replace('.php', '', basename($file));
 
         }, $files);
@@ -68,9 +70,8 @@ class SeedMigrator extends Migrator {
     /**
      * Run the outstanding migrations at a given path.
      *
-     * @param  string  $path
-     * @param  bool    $pretend
-     * @return void
+     * @param string $path
+     * @param bool   $pretend
      */
     public function runSingleFile($path, $pretend = false)
     {
@@ -90,7 +91,7 @@ class SeedMigrator extends Migrator {
         $filename_ext = pathinfo($path, PATHINFO_EXTENSION);
 
         if (!$filename_ext) {
-            $path .= ".php";
+            $path .= '.php';
         }
         $this->files->requireOnce($path);
 
@@ -100,10 +101,9 @@ class SeedMigrator extends Migrator {
     /**
      * Run "up" a migration instance.
      *
-     * @param  string  $file
-     * @param  int     $batch
-     * @param  bool    $pretend
-     * @return void
+     * @param string $file
+     * @param int    $batch
+     * @param bool   $pretend
      */
     protected function runUp($file, $batch, $pretend)
     {
@@ -113,8 +113,7 @@ class SeedMigrator extends Migrator {
         $fullPath = $this->getAppNamespace().$file;
         $migration = new $fullPath();
 
-        if ($pretend)
-        {
+        if ($pretend) {
             return $this->pretendToRun($migration, 'run');
         }
 
@@ -131,9 +130,8 @@ class SeedMigrator extends Migrator {
     /**
      * Run "down" a migration instance.
      *
-     * @param  object  $seed
-     * @param  bool    $pretend
-     * @return void
+     * @param object $seed
+     * @param bool   $pretend
      */
     protected function runDown($seed, $pretend)
     {
@@ -144,8 +142,7 @@ class SeedMigrator extends Migrator {
         // pretend execution of the migration or we can run the real migration.
         $instance = $this->resolve($file);
 
-        if ($pretend)
-        {
+        if ($pretend) {
             return $this->pretendToRun($instance, 'down');
         }
 
@@ -164,21 +161,23 @@ class SeedMigrator extends Migrator {
     /**
      * Resolve a migration instance from a file.
      *
-     * @param  string  $file
+     * @param string $file
+     *
      * @return object
      */
     public function resolve($file)
     {
-        $filePath = database_path(config('smart-seeder.seedDir')."/".$file.".php");
+        $filePath = database_path(config('smart-seeder.seedDir').'/'.$file.'.php');
         if (File::exists($filePath)) {
             require_once $filePath;
-        } else if (!empty($this->repository->env)) {
-            require_once database_path(config('smart-seeder.seedDir')."/".$this->repository->env."/".$file.".php");
+        } elseif (!empty($this->repository->env)) {
+            require_once database_path(config('smart-seeder.seedDir').'/'.$this->repository->env.'/'.$file.'.php');
         } else {
-            require_once database_path(config('smart-seeder.seedDir')."/".App::environment()."/".$file.".php");
+            require_once database_path(config('smart-seeder.seedDir').'/'.App::environment().'/'.$file.'.php');
         }
 
         $fullPath = $this->getAppNamespace().$file;
-        return new $fullPath;
+
+        return new $fullPath();
     }
-} 
+}

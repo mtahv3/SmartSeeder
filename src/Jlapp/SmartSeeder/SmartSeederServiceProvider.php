@@ -1,9 +1,22 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Support\ServiceProvider;
-use App;
 
-class SmartSeederServiceProvider extends ServiceProvider {
+class SmartSeederServiceProvider extends ServiceProvider
+{
+    /**
+     * Default table for the seeds.
+     *
+     * @var string
+     */
+    protected $table = 'seeds';
+
+    /**
+     * Default directory for the seed files.
+     *
+     * @var string
+     */
+    protected $dir   = 'smartSeeds';
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -12,65 +25,66 @@ class SmartSeederServiceProvider extends ServiceProvider {
      */
     protected $defer = true;
 
-    public function boot() {
+    public function boot()
+    {
+        if (function_exists('config_path')) {
+            $this->publishes([
+                __DIR__.'/../../config/smart-seeder.php' => config_path('smart-seeder.php'),
+            ]);
 
-        $this->publishes([
-            __DIR__.'/../../config/smart-seeder.php' => config_path('smart-seeder.php'),
-        ]);
+        } else {
+            // hacky solution for setting config values in lumen
+            config([
+                'smart-seeder' => [
+                    'seedTable' => $this->table,
+                    'seedDir' => $this->dir,
+                ]
+            ]);
+        }
     }
 
     /**
      * Register the service provider.
-     *
-     * @return void
      */
     public function register()
     {
-        $this->mergeConfigFrom(
-            __DIR__.'/../../config/smart-seeder.php', 'smart-seeder'
-        );
+        if (function_exists('config_path')) {
+            $this->mergeConfigFrom(_DIR__.'/../../config/smart-seeder.php', 'smart-seeder');
+        }
 
-        App::bindShared('seed.repository', function($app) {
+        $this->app->singleton('seed.repository', function ($app) {
             return new SmartSeederRepository($app['db'], config('smart-seeder.seedTable'));
         });
 
-        App::bindShared('seed.migrator', function($app)
-        {
+        $this->app->singleton('seed.migrator', function ($app) {
             return new SeedMigrator($app['seed.repository'], $app['db'], $app['files']);
         });
 
-        $this->app->bind('command.seed', function($app)
-        {
+        $this->app->bind('command.seed', function ($app) {
             return new SeedOverrideCommand($app['seed.migrator']);
         });
 
-        $this->app->bind('seed.run', function($app)
-        {
+        $this->app->bind('seed.run', function ($app) {
             return new SeedCommand($app['seed.migrator']);
         });
 
-        $this->app->bind('seed.install', function($app)
-        {
+        $this->app->bind('seed.install', function ($app) {
             return new SeedInstallCommand($app['seed.repository']);
         });
 
-        $this->app->bind('seed.make', function()
-        {
+        $this->app->bind('seed.make', function () {
             return new SeedMakeCommand();
         });
 
-        $this->app->bind('seed.reset', function($app)
-        {
+        $this->app->bind('seed.reset', function ($app) {
             return new SeedResetCommand($app['seed.migrator']);
         });
 
-        $this->app->bind('seed.rollback', function($app)
-        {
+        $this->app->bind('seed.rollback', function ($app) {
             return new SeedRollbackCommand($app['seed.migrator']);
         });
 
-        $this->app->bind('seed.refresh', function()
-        {
+        $this->app->bind('seed.refresh', function () {
             return new SeedRefreshCommand();
         });
 
@@ -103,5 +117,4 @@ class SmartSeederServiceProvider extends ServiceProvider {
             'seed.refresh',
         ];
     }
-
 }

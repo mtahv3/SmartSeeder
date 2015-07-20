@@ -1,14 +1,13 @@
 <?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
-use Symfony\Component\Console\Input\InputOption;
-use Illuminate\Support\Facades\App;
 use Illuminate\Console\ConfirmableTrait;
-use Illuminate\Support\Facades\Config;
+use Symfony\Component\Console\Input\InputOption;
 
-class SeedCommand extends Command {
-
+class SeedCommand extends Command
+{
     use ConfirmableTrait;
+
     /**
      * The console command name.
      *
@@ -25,11 +24,12 @@ class SeedCommand extends Command {
      */
     protected $description = 'Seeds the database';
 
-
-    public function __construct(SeedMigrator $migrator) {
+    public function __construct(SeedMigrator $migrator)
+    {
         parent::__construct();
         $this->migrator = $migrator;
     }
+
     /**
      * Execute the console command.
      *
@@ -37,7 +37,9 @@ class SeedCommand extends Command {
      */
     public function fire()
     {
-        if ( ! $this->confirmToProceed()) return;
+        if (!$this->confirmToProceed()) {
+            return;
+        }
 
         $this->prepareDatabase();
 
@@ -61,29 +63,24 @@ class SeedCommand extends Command {
         // Once the migrator has run we will grab the note output and send it out to
         // the console screen, since the migrator itself functions without having
         // any instances of the OutputInterface contract passed into the class.
-        foreach ($this->migrator->getNotes() as $note)
-        {
+        foreach ($this->migrator->getNotes() as $note) {
             $this->output->writeln($note);
         }
     }
 
     /**
      * Prepare the migration database for running.
-     *
-     * @return void
      */
     protected function prepareDatabase()
     {
         $this->migrator->setConnection($this->input->getOption('database'));
 
-        if ( ! $this->migrator->repositoryExists())
-        {
+        if (!$this->migrator->repositoryExists()) {
             $options = array('--database' => $this->input->getOption('database'));
 
             $this->call('seed:install', $options);
         }
     }
-
 
     /**
      * Get the console command options.

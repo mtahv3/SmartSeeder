@@ -5,8 +5,8 @@ use Illuminate\Database\Migrations\MigrationRepositoryInterface;
 use Illuminate\Database\Schema\Blueprint;
 use App;
 
-class SmartSeederRepository implements MigrationRepositoryInterface {
-
+class SmartSeederRepository implements MigrationRepositoryInterface
+{
     /**
      * The database connection resolver instance.
      *
@@ -29,7 +29,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     protected $connection;
 
     /**
-     * The name of the environment to run in
+     * The name of the environment to run in.
      *
      * @var string
      */
@@ -38,8 +38,8 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     /**
      * Create a new database migration repository instance.
      *
-     * @param  \Illuminate\Database\ConnectionResolverInterface $resolver
-     * @param  string                                           $table
+     * @param \Illuminate\Database\ConnectionResolverInterface $resolver
+     * @param string                                           $table
      */
     public function __construct(Resolver $resolver, $table)
     {
@@ -48,11 +48,12 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     }
 
     /**
-     * Set the environment to run the seeds against
+     * Set the environment to run the seeds against.
      *
      * @param $env
      */
-    public function setEnv($env) {
+    public function setEnv($env)
+    {
         $this->env = $env;
     }
 
@@ -67,6 +68,7 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
         if (empty($env)) {
             $env = App::environment();
         }
+
         return $this->table()->where('env', '=', $env)->lists('seed');
     }
 
@@ -90,9 +92,8 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     /**
      * Log that a migration was run.
      *
-     * @param  string  $file
-     * @param  int     $batch
-     * @return void
+     * @param string $file
+     * @param int    $batch
      */
     public function log($file, $batch)
     {
@@ -142,20 +143,18 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
         if (empty($env)) {
             $env = App::environment();
         }
+
         return $this->table()->where('env', '=', $env)->max('batch');
     }
 
     /**
      * Create the migration repository data store.
-     *
-     * @return void
      */
     public function createRepository()
     {
         $schema = $this->getConnection()->getSchemaBuilder();
 
-        $schema->create($this->table, function(Blueprint $table)
-        {
+        $schema->create($this->table, function (Blueprint $table) {
             // The migrations table is responsible for keeping track of which of the
             // migrations have actually run for the application. We'll create the
             // table to hold the migration file's path as well as the batch ID.
@@ -211,12 +210,10 @@ class SmartSeederRepository implements MigrationRepositoryInterface {
     /**
      * Set the information source to gather data.
      *
-     * @param  string  $name
-     * @return void
+     * @param string $name
      */
     public function setSource($name)
     {
         $this->connection = $name;
     }
-
 }

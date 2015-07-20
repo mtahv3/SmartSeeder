@@ -2,7 +2,8 @@
 
 use Illuminate\Database\Migrations\MigrationCreator;
 
-class SeedMigrationCreator extends MigrationCreator {
+class SeedMigrationCreator extends MigrationCreator
+{
     /**
      * Get the path to the stubs.
      *
@@ -12,4 +13,4 @@ class SeedMigrationCreator extends MigrationCreator {
     {
         return __DIR__.'/stubs';
     }
-} 
+}

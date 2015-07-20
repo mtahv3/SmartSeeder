@@ -1,12 +1,4 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Jordan
- * Date: 2014-11-07
- * Time: 1:46 PM
- */
-
-namespace Jlapp\SmartSeeder;
+<?php namespace Jlapp\SmartSeeder;
 
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
