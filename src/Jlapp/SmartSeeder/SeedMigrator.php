@@ -12,9 +12,9 @@ class SeedMigrator extends Migrator
     /**
      * Create a new migrator instance.
      *
-     * @param \Illuminate\Database\Migrations\MigrationRepositoryInterface $repository
-     * @param \Illuminate\Database\ConnectionResolverInterface             $resolver
-     * @param \Illuminate\Filesystem\Filesystem                            $files
+     * @param \Jlapp\SmartSeeder\SmartSeederRepository         $repository
+     * @param \Illuminate\Database\ConnectionResolverInterface $resolver
+     * @param \Illuminate\Filesystem\Filesystem                $files
      */
     public function __construct(
         SmartSeederRepository $repository,
@@ -24,9 +24,24 @@ class SeedMigrator extends Migrator
         parent::__construct($repository, $resolver, $files);
     }
 
+    /**
+     * Set environment to run under.
+     *
+     * @param string $env
+     */
     public function setEnv($env)
     {
         $this->repository->setEnv($env);
+    }
+
+    /**
+     * Get environment we run against.
+     *
+     * @return string
+     */
+    public function getEnv()
+    {
+        return $this->repository->getEnv();
     }
 
     /**
@@ -39,7 +54,9 @@ class SeedMigrator extends Migrator
     public function getMigrationFiles($path)
     {
         // make sure we don't try to merge FALSE that could return from glob
-        $envFiles  = $this->files->glob($path.'/'.$this->repository->getEnv().'/*.php') ?: [];
+        $envFiles  = $this->repository->getEnv()
+                    && $this->files->glob($path.'/'.$this->repository->getEnv().'/*.php') ?: [];
+
         $globFiles = $this->files->glob($path.'/*.php') ?: [];
 
         $files = array_merge($envFiles, $globFiles);
@@ -105,13 +122,13 @@ class SeedMigrator extends Migrator
         // migration file name. Once we have the instances we can run the actual
         // command such as "up" or "down", or we can just simulate the action.
         $fullPath = $this->getAppNamespace().$file;
-        $migration = new $fullPath();
+        $seed = new $fullPath();
 
         if ($pretend) {
-            return $this->pretendToRun($migration, 'run');
+            return $this->pretendToRun($seed, 'run');
         }
 
-        $migration->run();
+        $seed->run();
 
         // Once we have run a migrations class, we will log that it was run in this
         // repository so that we don't try to run it next time we do a migration

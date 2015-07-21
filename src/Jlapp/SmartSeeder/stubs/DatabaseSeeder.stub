@@ -1,18 +1,39 @@
 <?php {{namespace}}
 
-use Illuminate\Database\Seeder;
+use Faker\Factory as Faker;
+use Jlapp\SmartSeeder\SmartSeeder;
 use Illuminate\Database\Eloquent\Model;
 
-class {{model}} extends Seeder {
-
+class {{seeder}} extends SmartSeeder
+{
     /**
-     * Run the database seeds.
+     * Run the database seed.
      *
      * @return void
      */
     public function run()
     {
-        Model::unguard();
+        // --------------------------------------------------------------------
+        // If you need to populate your db with fake data, use Faker
+        // @link https://github.com/fzaninotto/Faker
+
+        // $faker = Faker::create();
+        // --------------------------------------------------------------------
+
+
+        // --------------------------------------------------------------------
+        // Use $this->table('name') to get an instance of query builder.
+        // or eloquent {{$model}}::create($data) - then uncomment
+        // unguard() below to avoid MassAssignmentException.
+
+        // Model::unguard();
+        // --------------------------------------------------------------------
+
+
+        // --------------------------------------------------------------------
+        // Mind that for high volume inserts (1k+ rows) using query
+        // builder instead of eloquent is *significantly* faster.
+        // --------------------------------------------------------------------
     }
 
     /**
@@ -22,8 +43,10 @@ class {{model}} extends Seeder {
      */
     public function down()
     {
-        Model::unguard();
-        {{class}}::truncate();
+        // Define rollback action or uncomment below in order
+        // to completely truncate the table for the model.
+
+        // {{model}}::truncate();
     }
 
 }

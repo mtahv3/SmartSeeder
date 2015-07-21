@@ -22,7 +22,7 @@ class SeedMakeCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Makes a seed';
+    protected $description = 'Creates a seed file.';
 
     /**
      * Filesystem instance.
@@ -68,9 +68,9 @@ class SeedMakeCommand extends Command
         $fs = $this->files->get(__DIR__.'/stubs/DatabaseSeeder.stub');
 
         $namespace = rtrim($this->getAppNamespace(), '\\');
-        $stub = str_replace('{{model}}', "seed_{$created}_".$model.'Seeder', $fs);
+        $stub = str_replace('{{seeder}}', "seed_{$created}_".$model.'Seeder', $fs);
         $stub = str_replace('{{namespace}}', " namespace $namespace;", $stub);
-        $stub = str_replace('{{class}}', $model, $stub);
+        $stub = str_replace('{{model}}', $model, $stub);
         $this->files->put($path, $stub);
 
         $message = "Seed created for $model";

@@ -147,8 +147,9 @@ class SmartSeederRepository implements MigrationRepositoryInterface
             // seeds have actually run for the application. We'll create the
             // table to hold the seed file's path as well as the batch ID.
             $table->string('seed');
-            $table->string('env');
+            $table->string('env')->nullable();
             $table->integer('batch');
+            $table->text('payload')->nullable();
         });
     }
 
