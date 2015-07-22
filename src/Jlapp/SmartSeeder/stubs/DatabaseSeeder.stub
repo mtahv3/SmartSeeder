@@ -48,5 +48,4 @@ class {{seeder}} extends SmartSeeder
 
         // {{model}}::truncate();
     }
-
 }

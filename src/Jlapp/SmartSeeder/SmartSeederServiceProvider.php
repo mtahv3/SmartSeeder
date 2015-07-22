@@ -16,7 +16,7 @@ class SmartSeederServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    protected $dir   = 'smartSeeds';
+    protected $dir   = 'smart_seeds';
 
     /**
      * Indicates if loading of the provider is deferred.
@@ -36,8 +36,8 @@ class SmartSeederServiceProvider extends ServiceProvider
             // hacky solution for setting config values in lumen
             config([
                 'smart-seeder' => [
-                    'seedTable' => $this->table,
-                    'seedDir' => $this->dir,
+                    'seedTable' => env('SMARTSEEDER_TABLE', $this->table),
+                    'seedDir'   => env('SMARTSEEDER_DIR', $this->dir),
                 ]
             ]);
         }
@@ -92,9 +92,12 @@ class SmartSeederServiceProvider extends ServiceProvider
             'seed.run',
             'seed.install',
             'seed.make',
-            'seed.reset',
-            'seed.rollback',
-            'seed.refresh',
+
+            // These commands require implementation.
+            // Currently they are pretty much useless.
+            // 'seed.reset',
+            // 'seed.rollback',
+            // 'seed.refresh',
         ]);
     }
 

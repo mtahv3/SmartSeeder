@@ -45,6 +45,35 @@ class SeedMigrator extends Migrator
     }
 
     /**
+     * Run the outstanding migrations at a given path.
+     *
+     * @param  string  $path
+     * @param  bool    $pretend
+     * @return void
+     */
+    public function run($path, $pretend = false)
+    {
+        $this->notes = [];
+
+        $files = $this->getMigrationFiles($path);
+
+        // Once we grab all of the migration files for the path, we will compare them
+        // against the migrations that have already been run for this package then
+        // run each of the outstanding migrations against a database connection.
+        $ran = $this->repository->getRan();
+
+        // $migrations = array_diff($files, $ran);
+        $seeds = array_diff_key($files, array_flip($ran));
+
+        // $this->requireFiles($path, $seeds);
+        foreach ($seeds as $file) {
+            $this->files->requireOnce($file);
+        }
+
+        $this->runMigrationList(array_keys($seeds), $pretend);
+    }
+
+    /**
      * Get all of the migration files in a given path.
      *
      * @param string $path
@@ -54,26 +83,34 @@ class SeedMigrator extends Migrator
     public function getMigrationFiles($path)
     {
         // make sure we don't try to merge FALSE that could return from glob
-        $envFiles  = $this->repository->getEnv()
-                    && $this->files->glob($path.'/'.$this->repository->getEnv().'/*.php') ?: [];
+        if ($this->repository->getEnv()) {
+            $envFiles = $this->files->glob($path.'/'.$this->repository->getEnv().'/*.php') ?: [];
+        } else {
+            $envFiles = [];
+        }
 
         $globFiles = $this->files->glob($path.'/*.php') ?: [];
 
-        $files = array_merge($envFiles, $globFiles);
+        $paths = array_merge($envFiles, $globFiles);
 
         // Once we have the array of files in the directory we will just remove the
         // extension and take the basename of the file which is all we need when
         // finding the migrations that haven't been run against the databases.
 
-        $files = array_map(function ($file) {
+        $files = array_combine(array_map(function ($file) {
             return str_replace('.php', '', basename($file));
+        }, $paths), $paths);
 
-        }, $files);
+        // $files = array_map(function ($file) {
+        //     return str_replace('.php', '', basename($file));
+
+        // }, $files);
 
         // Once we have all of the formatted file names we will sort them and since
         // they all start with a timestamp this should give us the migrations in
         // the order they were actually created by the application developers.
-        sort($files);
+        // sort($files);
+        ksort($files);
 
         return $files;
     }
