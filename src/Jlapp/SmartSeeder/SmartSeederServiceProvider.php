@@ -49,7 +49,7 @@ class SmartSeederServiceProvider extends ServiceProvider
     public function register()
     {
         if (function_exists('config_path')) {
-            $this->mergeConfigFrom(_DIR__.'/../../config/smart-seeder.php', 'smart-seeder');
+            $this->mergeConfigFrom(__DIR__.'/../../config/smart-seeder.php', 'smart-seeder');
         }
 
         $this->app->singleton('seed.repository', function ($app) {
