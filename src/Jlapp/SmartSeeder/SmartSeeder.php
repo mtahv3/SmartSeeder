@@ -14,4 +14,10 @@ class SmartSeeder extends Seeder
     {
         return app('db')->table($table);
     }
+
+    public function run()
+    {
+
+    }
+
 }

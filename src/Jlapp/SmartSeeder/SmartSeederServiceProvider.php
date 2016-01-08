@@ -95,9 +95,9 @@ class SmartSeederServiceProvider extends ServiceProvider
 
             // These commands require implementation.
             // Currently they are pretty much useless.
-            // 'seed.reset',
-            // 'seed.rollback',
-            // 'seed.refresh',
+            'seed.reset',
+            'seed.rollback',
+            'seed.refresh',
         ]);
     }
 
