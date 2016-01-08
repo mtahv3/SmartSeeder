@@ -51,7 +51,7 @@ class SeedMigrator extends Migrator
      * @param  bool    $pretend
      * @return void
      */
-    public function run($path, $pretend = false)
+    public function run($path, array $options=[])
     {
         $this->notes = [];
 
@@ -70,7 +70,7 @@ class SeedMigrator extends Migrator
             $this->files->requireOnce($file);
         }
 
-        $this->runMigrationList(array_keys($seeds), $pretend);
+        $this->runMigrationList(array_keys($seeds), $options);
     }
 
     /**
