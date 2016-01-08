@@ -54,6 +54,8 @@ class SeedCommand extends Command
         // a database for real, which is helpful for double checking migrations.
         $pretend = $this->input->getOption('pretend');
 
+        $opts=["pretend"=>$pretend];
+
         $path = database_path(config('smart-seeder.seedDir'));
 
         $env = $this->option('env');
@@ -66,7 +68,7 @@ class SeedCommand extends Command
             $this->migrator->runSingleFile("$path/$single", $pretend);
 
         } else {
-            $this->migrator->run($path, $pretend);
+            $this->migrator->run($path, $opts);
         }
 
         // Once the migrator has run we will grab the note output and send it out to

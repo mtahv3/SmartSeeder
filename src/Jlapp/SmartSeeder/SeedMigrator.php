@@ -143,7 +143,9 @@ class SeedMigrator extends Migrator
         }
         $this->files->requireOnce($path);
 
-        $this->runMigrationList($migrations, $pretend);
+        $opts=["pretend"=>$pretend];
+
+        $this->runMigrationList($migrations, $opts);
     }
 
     /**
