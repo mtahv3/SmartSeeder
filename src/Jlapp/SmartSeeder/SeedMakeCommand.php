@@ -2,13 +2,13 @@
 
 use Illuminate\Console\Command;
 use Illuminate\Filesystem\Filesystem;
-use Illuminate\Console\AppNamespaceDetectorTrait;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Jlapp\SmartSeeder\SmartSeederNamespaceDetectorTrait;
 
 class SeedMakeCommand extends Command
 {
-    use AppNamespaceDetectorTrait;
+    use SmartSeederNamespaceDetectorTrait;
 
     /**
      * The console command name.

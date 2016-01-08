@@ -2,12 +2,12 @@
 
 use Illuminate\Filesystem\Filesystem;
 use Illuminate\Database\Migrations\Migrator;
-use Illuminate\Console\AppNamespaceDetectorTrait;
 use Illuminate\Database\ConnectionResolverInterface as Resolver;
+use Jlapp\SmartSeeder\SmartSeederNamespaceDetectorTrait;
 
 class SeedMigrator extends Migrator
 {
-    use AppNamespaceDetectorTrait;
+    use SmartSeederNamespaceDetectorTrait;
 
     /**
      * Create a new migrator instance.
