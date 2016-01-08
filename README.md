@@ -1,6 +1,6 @@
 # SmartSeeder for Laravel
 
-**Fork of [jlapp/smart-seeder](https://github.com/slampenny/SmartSeeder) adjusted for L5.1 (and Lumen)**
+**Fork of [jlapp/smart-seeder](https://github.com/slampenny/SmartSeeder) adjusted for Lumen 5.2**
 
 
 ### Installation
@@ -10,22 +10,22 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/jarektkaczyk/SmartSeeder"
+            "url": "https://github.com/mtahv3/SmartSeeder"
         }
     ],
     "require": {
         ...
-        "sofa/smart-seeder": "dev-master"
+        "mtahv3/smart-seeder": "dev-master"
     },
     ```
 
-- Add `Jlapp\SmartSeeder\SmartSeederServiceProvider` to your providers array in `app/config/app.php`
-- Run php artisan vendor:publish to push config files to your config folder if you want to override the name of the seeds folder or the name of the table where seeds are stored
+- Add `Jlapp\SmartSeeder\SmartSeederServiceProvider` to your providers array in `bootstrap/app.php`
+
+    ```
+$app->register(Jlapp\SmartSeeder\SmartSeederServiceProvider::class);
+```
 
 ---
-
-### For Laravel 5, please use the [5.0 branch](https://github.com/jarektkaczyk/SmartSeeder/tree/5.0)!
-### For Laravel 4, please use the [4.2 branch](https://github.com/jarektkaczyk/SmartSeeder/tree/4.2)!
 
 Seeding as it is currently done in Laravel is intended only for dev builds, but what if you're iteratively creating your database and want to constantly flush it and repopulate it during development? What if you want to seed a production database with different data from what you use in development? What if you want to seed a table you've added to a database that is currently in production with new data?
 
